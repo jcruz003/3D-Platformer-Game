@@ -4,24 +4,23 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public int jumpMultiplier = 5;
-    private float horizontalInput;
-    private Rigidbody rigidbodyComponent;
+    public int JumpForce = 5;
+    private float _horizontalInput;
+    private Rigidbody _rigidBody;
     private Canvas uiComponent;
-    public float horizontalInputMultiplier = 0.25f; 
+    public float Speed = 5f; 
     public int jumpCounter; 
     private bool isJumpPressed;
     public int maxJumps = 50;
     public GameManager gameManager;
 
-    // Start is called before the first frame update
+
     void Start()
     {
-        rigidbodyComponent = GetComponent<Rigidbody>();
+        _rigidBody = GetComponent<Rigidbody>();
         uiComponent = GetComponent<Canvas>();
     }
-
-    // Update is called once per frame
+    
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
@@ -29,20 +28,15 @@ public class Player : MonoBehaviour
             isJumpPressed = true; 
         }
 
-        horizontalInput = Input.GetAxis("Horizontal");
+        _horizontalInput = Input.GetAxis("Horizontal");
     }
 
     void FixedUpdate() 
     {
-        //kill momentum 
-        rigidbodyComponent.velocity = new Vector3(0,rigidbodyComponent.velocity.y, 0);
-        rigidbodyComponent.angularVelocity = new Vector3(0, rigidbodyComponent.angularVelocity.y, 0);
-
         //jump mechanism 
         if (isJumpPressed)
         {
-            rigidbodyComponent.AddForce(Vector3.up * jumpMultiplier, ForceMode.Impulse);
-            //rigidbodyComponent.AddForce(Vector3.up * jumpMultiplier, ForceMode.VelocityChange);
+            _rigidBody.AddForce(new Vector3(0, JumpForce, 0), ForceMode.Impulse);
             jumpCounter ++;
             if (jumpCounter >= maxJumps)
             {
@@ -53,11 +47,12 @@ public class Player : MonoBehaviour
 
         }
 
-
-        // move horizontally 
-        rigidbodyComponent.MovePosition(transform.localPosition + new Vector3(horizontalInput * horizontalInputMultiplier * Time.fixedDeltaTime, 0, 0));
-        // rigidbodyComponent.AddForce(new Vector3(horizontalInput * horizontalInputMultiplier, 0, 0));
-        // rigidbodyComponent.velocity = new Vector3(horizontalInput * horizontalInputMultiplier, rigidbodyComponent.velocity.y, 0);
+        // horizontal move mechanism
+        transform.position += new Vector3(_horizontalInput, 0, 0) * Time.fixedDeltaTime * Speed;
+        if (_horizontalInput == 0)
+        {
+            _rigidBody.velocity = new Vector3(0, _rigidBody.velocity.y, 0);
+        }
     }
 
     private void OnTriggerEnter(Collider other)
