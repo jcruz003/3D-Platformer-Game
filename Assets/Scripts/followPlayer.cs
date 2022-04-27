@@ -3,22 +3,26 @@ using UnityEngine;
 public class followPlayer : MonoBehaviour
 {
     public float speed;
-    public float maxY;
-    public float minY; 
-    public GameObject player; 
+
+    public Transform min_position;
+    public Transform max_position;  
+    public Transform player; 
 
     void Start()
     {
-        var originalPositionY = transform.localPosition.y;
+        var startPositionY = transform.localPosition.y;
     }
 
     void Update()
     {
         var playerPositionY = player.transform.position.y;
+        var minY = min_position.transform.localPosition.y;
+        var maxY = max_position.transform.localPosition.y;
 
         if (playerPositionY > minY & playerPositionY < maxY)
         {
-            transform.localPosition = new Vector3(transform.localPosition.x, playerPositionY, transform.localPosition.z);
+            var nextPosition = new Vector3(transform.localPosition.x, playerPositionY, transform.localPosition.z);
+            transform.localPosition = Vector3.MoveTowards(transform.localPosition, nextPosition, speed * Time.deltaTime);
         }
         
     }
