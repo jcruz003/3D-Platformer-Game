@@ -3,7 +3,6 @@ using UnityEngine;
 public class followPlayer : MonoBehaviour
 {
     public float speed;
-
     public Transform min_position;
     public Transform max_position;  
     public Transform player; 
